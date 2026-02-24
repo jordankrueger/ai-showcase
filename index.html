@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building with AI | Jordan Krueger</title>
+  <meta name="description" content="How one non-coder used Claude Code to build 40+ projects across nonprofit tech, community infrastructure, and personal productivity.">
+  <meta property="og:title" content="Building with AI | Jordan Krueger">
+  <meta property="og:description" content="40+ projects built with Claude Code — from full SaaS apps to ADHD productivity tools.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ========================================
+       RESET & BASE
+       ======================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-warm: #fff8ed;
+      --bg-white: #ffffff;
+      --bg-card: #ffffff;
+      --bg-tag: #fef3dc;
+      --text: #3d3229;
+      --text-muted: #6d5f52;
+      --text-light: #9a8d80;
+      --accent: #f0b847;
+      --accent-hover: #e5a52d;
+      --accent-light: #fef3dc;
+      --accent-green: #6a9b5e;
+      --accent-green-light: #e8f2e4;
+      --accent-coral: #d97656;
+      --accent-coral-light: #fce8df;
+      --accent-blue: #6889a8;
+      --accent-blue-light: #e1edf5;
+      --border: #ece4d7;
+      --shadow: 0 2px 16px rgba(61, 50, 41, 0.06);
+      --shadow-hover: 0 6px 24px rgba(61, 50, 41, 0.1);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --max-width: 760px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-warm);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ========================================
+       TYPOGRAPHY
+       ======================================== */
+    h1, h2 {
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    h1 { font-size: clamp(2.5rem, 6vw, 3.8rem); }
+    h2 { font-size: clamp(2rem, 4vw, 2.8rem); }
+    h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    a {
+      color: var(--accent-blue);
+      text-decoration: underline;
+      text-decoration-color: rgba(104, 137, 168, 0.3);
+      text-underline-offset: 3px;
+      transition: text-decoration-color 0.2s;
+    }
+    a:hover { text-decoration-color: var(--accent-blue); }
+
+    /* ========================================
+       LAYOUT
+       ======================================== */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .wide-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 72px 0;
+    }
+
+    .bg-warm { background: var(--bg-warm); }
+    .bg-white { background: var(--bg-white); }
+
+    /* ========================================
+       HEADER
+       ======================================== */
+    header {
+      background: var(--bg-warm);
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 960px;
+    }
+
+    .logo {
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    nav {
+      display: flex;
+      gap: 24px;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+
+    /* ========================================
+       HERO
+       ======================================== */
+    .hero {
+      background: var(--bg-warm);
+      padding: 80px 0 64px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    .hero-intro {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 48px;
+      line-height: 1.75;
+    }
+
+    /* ========================================
+       STATS
+       ======================================== */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .stat {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 12px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Caveat', cursive;
+      font-size: 2.2rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    /* ========================================
+       SECTION HEADERS
+       ======================================== */
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-header h2 {
+      margin-bottom: 12px;
+    }
+
+    .section-description {
+      color: var(--text-muted);
+      max-width: 540px;
+      margin: 0 auto;
+      font-size: 1rem;
+    }
+
+    /* ========================================
+       NARRATIVE
+       ======================================== */
+    .narrative {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .narrative p {
+      margin-bottom: 20px;
+      color: var(--text-muted);
+    }
+
+    .narrative p:first-of-type {
+      font-size: 1.05rem;
+    }
+
+    .narrative strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .pullquote {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 20px 24px;
+      margin: 28px 0;
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ========================================
+       PROJECT CARDS
+       ======================================== */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+
+    .project-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .project-card h3 {
+      margin-bottom: 8px;
+    }
+
+    .project-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+      line-height: 1.65;
+    }
+
+    .project-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tech-tag {
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: var(--bg-tag);
+      color: var(--text-light);
+    }
+
+    .status {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    .status-live { background: var(--accent-green-light); color: var(--accent-green); }
+    .status-deployed { background: var(--accent-green-light); color: var(--accent-green); }
+    .status-active { background: var(--accent-light); color: #9a7a1c; }
+    .status-complete { background: var(--accent-blue-light); color: var(--accent-blue); }
+
+    /* ========================================
+       STORY CARDS
+       ======================================== */
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .story-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .story-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .story-card:nth-child(1)::before { background: var(--accent); }
+    .story-card:nth-child(2)::before { background: var(--accent-green); }
+    .story-card:nth-child(3)::before { background: var(--accent-coral); }
+    .story-card:nth-child(4)::before { background: var(--accent-blue); }
+    .story-card:nth-child(5)::before { background: var(--accent); }
+    .story-card:nth-child(6)::before { background: var(--accent-green); }
+
+    .story-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+
+    .story-card h3 {
+      margin-bottom: 8px;
+    }
+
+    .story-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    /* ========================================
+       CTA BUTTON
+       ======================================== */
+    .cta-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 12px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .cta-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+
+    /* ========================================
+       FOOTER
+       ======================================== */
+    footer {
+      background: var(--bg-warm);
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    footer p {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--text-muted);
+    }
+
+    /* ========================================
+       BACK TO TOP
+       ======================================== */
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 8px;
+      font-size: 0.85rem;
+    }
+
+    .back-link a {
+      color: var(--text-light);
+      text-decoration: none;
+    }
+    .back-link a:hover {
+      color: var(--text-muted);
+    }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 640px) {
+      section { padding: 48px 0; }
+      .hero { padding: 56px 0 40px; }
+      .project-grid { grid-template-columns: 1fr; }
+      .story-grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      nav { gap: 14px; }
+      nav a { font-size: 0.82rem; }
+      .logo { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container">
+      <a href="https://jordankrueger.com" class="logo">Jordan Krueger</a>
+      <nav>
+        <a href="#story">Story</a>
+        <a href="#advocacy">Advocacy</a>
+        <a href="#community">Community</a>
+        <a href="#personal">Personal</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <h1>I'm not a developer.<br>I built all of this anyway.</h1>
+      <p class="hero-intro">
+        I run a consulting firm that helps progressive nonprofits with IT and operations.
+        I also manage a 30-year-old online community, try to keep my ADHD brain organized,
+        and apparently build a lot of software now. Here's everything I've shipped with
+        <a href="https://claude.ai/claude-code" target="_blank">Claude Code</a> as my co-pilot.
+      </p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-number">40+</div>
+          <div class="stat-label">Projects Built</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">5</div>
+          <div class="stat-label">Live Apps</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Domains of Life</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">1</div>
+          <div class="stat-label">Lines of Code by Me</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE STORY -->
+  <section id="story" class="bg-white">
+    <div class="container">
+      <div class="section-header">
+        <h2>The story</h2>
+      </div>
+
+      <div class="narrative">
+        <p>
+          I've worked in progressive politics and nonprofit operations for twenty years.
+          I know ActionKit, Google Workspace, and Freshdesk inside out. I can untangle
+          a broken email pipeline in my sleep. But writing code? That was always someone else's job.
+        </p>
+
+        <p>
+          Then I started using Claude Code, and something shifted. I went from "Can you help
+          me write a Python script?" to shipping full-stack web applications in a single sitting.
+          Not toy apps &mdash; real tools that I use every day, that my clients pay for, and that
+          hundreds of people depend on.
+        </p>
+
+        <div class="pullquote">
+          I'm not a coder/developer, but I want to try and level up my skills via vibecoding with Claude Code.
+        </div>
+
+        <p>
+          What surprised me most wasn't the code itself &mdash; it was the <strong>breadth</strong>.
+          In a single day, I might fix a WordPress security vulnerability, build a Stripe-integrated
+          SaaS frontend, set up server monitoring, draft an advocacy newsletter, and configure
+          automated backups. Claude doesn't just write code; it handles the entire surface area
+          of running a technology-dependent life.
+        </p>
+
+        <p>
+          I have ADHD, which means I tend to bounce between projects. Most productivity advice
+          says that's a problem. With Claude Code, it became a superpower. I can context-switch
+          between a Firebase app, a Cloudflare Worker, a WordPress plugin, and a Next.js
+          dashboard &mdash; and actually ship all four in the same afternoon.
+        </p>
+
+        <p>
+          Everything below was built in roughly three weeks. No contractors. No dev team.
+          Just me describing what I needed, and Claude helping me build it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NONPROFIT TECH & ADVOCACY -->
+  <section id="advocacy" class="bg-warm">
+    <div class="wide-container">
+      <div class="section-header">
+        <h2>Tools for progressive campaigns</h2>
+        <p class="section-description">
+          I help progressive nonprofits run smarter campaigns and fix their tech headaches.
+          These are the products and tools I've built for that work.
+        </p>
+      </div>
+
+      <div class="project-grid">
+        <div class="project-card">
+          <h3>AK Help</h3>
+          <p>
+            An AI assistant for ActionKit users &mdash; the advocacy platform most progressive
+            nonprofits use. A Playwright scraper pulls 114 help docs and 176 real support emails,
+            anonymizes them, and feeds an AI knowledge base. Freemium SaaS frontend with
+            Stripe billing, magic-link auth, and auto-refreshing monthly pipeline.
+          </p>
+          <div class="project-meta">
+            <span class="status status-live">Live (Beta)</span>
+            <span class="tech-tag">Next.js</span>
+            <span class="tech-tag">Playwright</span>
+            <span class="tech-tag">Stripe</span>
+            <span class="tech-tag">Claude Haiku</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>campaign.help</h3>
+          <p>
+            My consulting firm's marketing website. Built from scratch in a single session,
+            pulling real testimonials and client logos from Notion. Images compressed 81%,
+            GA4 integrated, deployed to Cloudflare Pages.
+          </p>
+          <div class="project-meta">
+            <span class="status status-live">Live</span>
+            <span class="tech-tag">Next.js</span>
+            <span class="tech-tag">Cloudflare Pages</span>
+            <span class="tech-tag">Notion API</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Progressives for AI</h3>
+          <p>
+            A newsletter for progressives who want to engage thoughtfully with AI rather than
+            dismiss it. Static landing site, Beehiiv publication, Cloudflare Worker signup flow,
+            and AI-generated editorial photography banners for each issue.
+          </p>
+          <div class="project-meta">
+            <span class="status status-live">Live</span>
+            <span class="tech-tag">Beehiiv</span>
+            <span class="tech-tag">Cloudflare Workers</span>
+            <span class="tech-tag">DALL-E</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>highspeedrail.tv</h3>
+          <p>
+            A curated video site for high-speed rail advocacy. YouTube API-powered admin panel
+            for searching, queueing, and reviewing videos. AI-assisted review feature for quickly
+            evaluating new content. Auto-deploys on push.
+          </p>
+          <div class="project-meta">
+            <span class="status status-live">Live</span>
+            <span class="tech-tag">Eleventy</span>
+            <span class="tech-tag">Express</span>
+            <span class="tech-tag">YouTube API</span>
+            <span class="tech-tag">Cloudflare Pages</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>MDM Fleet Management</h3>
+          <p>
+            Operations runbook for managing Mac fleets across two nonprofit clients.
+            Covers FileVault key escrow, Escrow Buddy deployment, remediation tracking,
+            and platform comparison between Mosyle and JAMF Now.
+          </p>
+          <div class="project-meta">
+            <span class="status status-active">Active</span>
+            <span class="tech-tag">Mosyle</span>
+            <span class="tech-tag">JAMF Now</span>
+            <span class="tech-tag">macOS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY INFRASTRUCTURE -->
+  <section id="community" class="bg-white">
+    <div class="wide-container">
+      <div class="section-header">
+        <h2>Running a 30-year-old online community</h2>
+        <p class="section-description">
+          I've managed an online creative writing community since 1994 &mdash; 139 active members,
+          438,000+ collaborative stories, and a full technology stack across five web properties.
+          Claude helped me modernize all of it.
+        </p>
+      </div>
+
+      <div class="project-grid">
+        <div class="project-card">
+          <h3>Staff Operations Platform</h3>
+          <p>
+            A centralized hub replacing Google Sheets, email workflows, and tribal knowledge.
+            15-table data model, 136 members imported, NocoDB data layer, Authentik SSO,
+            Next.js admin panel with role-based navigation.
+          </p>
+          <div class="project-meta">
+            <span class="status status-active">In Progress</span>
+            <span class="tech-tag">Next.js 15</span>
+            <span class="tech-tag">NocoDB</span>
+            <span class="tech-tag">PostgreSQL</span>
+            <span class="tech-tag">Authentik</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Visitor Fingerprinting Plugin</h3>
+          <p>
+            WordPress plugin that fingerprints every visitor (canvas, WebGL, fonts, screen data)
+            and cross-references against banned users when new members apply.
+            Catches ban evaders who rejoin under different names.
+          </p>
+          <div class="project-meta">
+            <span class="status status-deployed">Deployed</span>
+            <span class="tech-tag">PHP</span>
+            <span class="tech-tag">WordPress</span>
+            <span class="tech-tag">JavaScript</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>438K-Post Archive</h3>
+          <p>
+            Firebase-backed archive of every collaborative story ever written in the community.
+            Cloud Functions for data processing, automated backups to iDrive (5.2GB raw, compressed to 1.76GB).
+          </p>
+          <div class="project-meta">
+            <span class="status status-live">Live</span>
+            <span class="tech-tag">Firebase</span>
+            <span class="tech-tag">Cloud Functions</span>
+            <span class="tech-tag">Node.js</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>4-Pipeline Backup System</h3>
+          <p>
+            Offsite backup covering everything: cPanel daily backups, custom DB dumps (working
+            around a 268MB kernel memory cap), Firebase archive snapshots, and VPS service configs.
+          </p>
+          <div class="project-meta">
+            <span class="status status-deployed">Deployed</span>
+            <span class="tech-tag">rclone</span>
+            <span class="tech-tag">Bash</span>
+            <span class="tech-tag">Node.js</span>
+            <span class="tech-tag">cron</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>MediaWiki 10x Speedup</h3>
+          <p>
+            Took a 54,000-page wiki from 1.5s to 0.15s response times. Migrated to PHP 8.2 + FPM,
+            installed APCu caching, configured OPcache with JIT, and cleaned a 1.38GB stale cache table.
+          </p>
+          <div class="project-meta">
+            <span class="status status-complete">Complete</span>
+            <span class="tech-tag">MediaWiki</span>
+            <span class="tech-tag">PHP-FPM</span>
+            <span class="tech-tag">APCu</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>WordPress 14x Speedup</h3>
+          <p>
+            WordPress Multisite homepage went from 3.4s to 0.24s. Cleaned 87MB of orphaned tables,
+            removed 5 unused themes, and optimized 284 database tables.
+          </p>
+          <div class="project-meta">
+            <span class="status status-complete">Complete</span>
+            <span class="tech-tag">WordPress</span>
+            <span class="tech-tag">WP-CLI</span>
+            <span class="tech-tag">MariaDB</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>SEO Program</h3>
+          <p>
+            Full SEO overhaul across 5 web properties: RankMath across WordPress, GA4 on
+            every property, Google Search Console for 3 domains, 11 new content pieces, and
+            email drip campaigns.
+          </p>
+          <div class="project-meta">
+            <span class="status status-active">Ongoing</span>
+            <span class="tech-tag">RankMath</span>
+            <span class="tech-tag">GA4</span>
+            <span class="tech-tag">Sendy</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Constitution Rewrite</h3>
+          <p>
+            Rewrote the community's governing documents from scratch. Read 114 forum posts of
+            prior debate, synthesized two previous rewrite attempts, and built an annotated
+            review presentation with a 55-row traceability matrix.
+          </p>
+          <div class="project-meta">
+            <span class="status status-active">Under Review</span>
+            <span class="tech-tag">Markdown</span>
+            <span class="tech-tag">HTML</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Annual Address Builder</h3>
+          <p>
+            Web app for assembling the community's annual address from 11 groups' submissions.
+            Role-based auth, Claude API integration for AI-assisted summaries, and
+            wiki integration.
+          </p>
+          <div class="project-meta">
+            <span class="status status-deployed">Deployed</span>
+            <span class="tech-tag">React</span>
+            <span class="tech-tag">Express</span>
+            <span class="tech-tag">Claude API</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Server Monitoring</h3>
+          <p>
+            Self-hosted Netdata monitoring with custom health alerts and a dark-themed status
+            dashboard pulling live metrics via API every 30 seconds.
+          </p>
+          <div class="project-meta">
+            <span class="status status-live">Live</span>
+            <span class="tech-tag">Netdata</span>
+            <span class="tech-tag">Apache</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Security Plugin</h3>
+          <p>
+            WordPress must-use plugin that enforces login on private multisite sub-sites.
+            The previous plugin left the REST API and RSS feeds wide open.
+            This one blocks everything. Protecting 6 internal staff sites.
+          </p>
+          <div class="project-meta">
+            <span class="status status-deployed">Deployed</span>
+            <span class="tech-tag">PHP</span>
+            <span class="tech-tag">WordPress MU</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Email Infrastructure</h3>
+          <p>
+            Set up Sendy for 3 brands after AWS SES denied production access. Pivoted to SMTP2GO,
+            designed custom HTML email templates, built a 3-email drip autoresponder, and redesigned
+            9 notification templates across 4 sites.
+          </p>
+          <div class="project-meta">
+            <span class="status status-deployed">Deployed</span>
+            <span class="tech-tag">Sendy</span>
+            <span class="tech-tag">SMTP2GO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERSONAL PRODUCTIVITY -->
+  <section id="personal" class="bg-warm">
+    <div class="wide-container">
+      <div class="section-header">
+        <h2>Building the systems my brain needs</h2>
+        <p class="section-description">
+          I have ADHD. Standard productivity tools either overwhelm me or
+          bore me into abandoning them. So I built my own.
+        </p>
+      </div>
+
+      <div class="project-grid">
+        <div class="project-card">
+          <h3>Drift</h3>
+          <p>
+            My daily-driver productivity app, built from zero to deployed in a single session.
+            Task management that lets me "drift" between projects without guilt, a debt payoff
+            tracker using the avalanche method, a website uptime monitor for 17 sites, and
+            a social content draft pipeline.
+          </p>
+          <div class="project-meta">
+            <span class="status status-live">Live</span>
+            <span class="tech-tag">Next.js</span>
+            <span class="tech-tag">SQLite</span>
+            <span class="tech-tag">Docker</span>
+            <span class="tech-tag">Drizzle ORM</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Smart Bookmarks</h3>
+          <p>
+            Click a browser bookmarklet on any page and a Cloudflare Worker fetches the content,
+            calls Claude to generate a title, description, and tags, then saves it to Raindrop.io.
+            No manual tagging ever again.
+          </p>
+          <div class="project-meta">
+            <span class="status status-deployed">Deployed</span>
+            <span class="tech-tag">Cloudflare Workers</span>
+            <span class="tech-tag">Claude API</span>
+            <span class="tech-tag">Raindrop.io</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Fathom Sync</h3>
+          <p>
+            After every meeting, action items were getting lost. This polls the Fathom AI
+            meeting note-taker and syncs summaries to a Notion database while turning action
+            items into tasks in Drift. Runs automatically twice a day.
+          </p>
+          <div class="project-meta">
+            <span class="status status-deployed">Deployed</span>
+            <span class="tech-tag">TypeScript</span>
+            <span class="tech-tag">Notion API</span>
+            <span class="tech-tag">LaunchAgent</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Healthy Eating System</h3>
+          <p>
+            Not an app &mdash; a system. ADHD + reactive hypoglycemia means I can't rely on
+            willpower for meal decisions. A 64-item food database, auto-generated grocery lists,
+            and a Friday automation that reminds me to confirm Saturday pickup.
+          </p>
+          <div class="project-meta">
+            <span class="status status-active">Active</span>
+            <span class="tech-tag">Notion</span>
+            <span class="tech-tag">Shell</span>
+            <span class="tech-tag">LaunchAgent</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Secrets Manager</h3>
+          <p>
+            A 261-line Python CLI that keeps API keys in sync across two config files
+            simultaneously. Found 2 mismatches on its very first run.
+          </p>
+          <div class="project-meta">
+            <span class="status status-deployed">In Use</span>
+            <span class="tech-tag">Python</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Lease Tracker</h3>
+          <p>
+            A React PWA that answers one question: "How many miles can I drive today?"
+            Calculates remaining daily mileage for a car lease with pace tracking.
+            Works offline, fits in a single HTML file.
+          </p>
+          <div class="project-meta">
+            <span class="status status-live">Live</span>
+            <span class="tech-tag">React</span>
+            <span class="tech-tag">PWA</span>
+            <span class="tech-tag">GitHub Pages</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <h3>Personality Profile</h3>
+          <p>
+            Used Claude to analyze 1,023 AI conversations plus a formal psychological evaluation
+            to build a comprehensive personality profile. Meta-AI work: using AI to understand
+            how I use AI.
+          </p>
+          <div class="project-meta">
+            <span class="status status-complete">Complete</span>
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">Claude Batch API</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- HIGHLIGHT STORIES -->
+  <section id="highlights" class="bg-white">
+    <div class="wide-container">
+      <div class="section-header">
+        <h2>The stories behind the projects</h2>
+        <p class="section-description">
+          The numbers are fine, but the stories are better.
+        </p>
+      </div>
+
+      <div class="story-grid">
+        <div class="story-card">
+          <div class="story-label">Zero to Shipped</div>
+          <h3>Built Drift in a Single Session</h3>
+          <p>
+            February 8: Started from an empty folder. By the end of one sitting, I had a full
+            Next.js app with SQLite, all API routes, Docker configuration, and four default project
+            areas seeded. It's been my daily driver ever since.
+          </p>
+        </div>
+
+        <div class="story-card">
+          <div class="story-label">Performance</div>
+          <h3>10x Wiki Speedup</h3>
+          <p>
+            A 54,000-page wiki went from 1.5 seconds to 0.15 seconds. PHP 8.2 migration,
+            APCu caching, OPcache JIT, and cleaning a 1.38GB stale cache table. The hardest lesson:
+            APCu's CLI and FPM memory pools are completely separate.
+          </p>
+        </div>
+
+        <div class="story-card">
+          <div class="story-label">Problem Solving</div>
+          <h3>The Backup That Wouldn't Fit</h3>
+          <p>
+            A 40GB archive kept crashing the backup system. The VPS had a 268MB kernel
+            memory cap that killed any tar+gzip operation. After multiple failed approaches,
+            Claude redesigned the entire strategy: separate DB dumps from file sync, no compression.
+          </p>
+        </div>
+
+        <div class="story-card">
+          <div class="story-label">Breadth</div>
+          <h3>Eight Projects in One Day</h3>
+          <p>
+            February 16: Migrated an email platform, built two milestones of a SaaS app,
+            created a client acquisition strategy, ran a full infrastructure report using parallel
+            AI agents, deep-dived a data model design, deployed SEO improvements, and more.
+          </p>
+        </div>
+
+        <div class="story-card">
+          <div class="story-label">Discovery</div>
+          <h3>Finding the Silent Failures</h3>
+          <p>
+            Some of the most valuable work was finding things that were broken but nobody knew.
+            A 41GB backup that never ran. An AWS Glacier bill from 2.1TB of forgotten archives.
+            Forum emails silently failing for 31 days. An internal wiki fully exposed via REST API.
+          </p>
+        </div>
+
+        <div class="story-card">
+          <div class="story-label">Meta</div>
+          <h3>AI Analyzing AI Conversations</h3>
+          <p>
+            I fed Claude 1,023 of my previous AI conversations plus a formal psych evaluation.
+            It produced a 271-line personality profile that any future AI session can read to
+            understand my working style, cognitive strengths, and ADHD patterns.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p>
+        Built with <a href="https://claude.ai/claude-code" target="_blank">Claude Code</a>.
+        Obviously.
+      </p>
+      <p class="back-link"><a href="https://jordankrueger.com">&larr; Back to jordankrueger.com</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
